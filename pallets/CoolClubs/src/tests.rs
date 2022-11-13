@@ -3,12 +3,9 @@ pub use frame_support::{assert_noop, assert_ok};
 pub use frame_system::RawOrigin;
 
 /// function for calculating the membership_period in test
-
 fn membership_expire_period_test(membership_period_in_years:u32, block_number_now:BlockNumber)->BlockNumber {
     let  years:BlockNumber = membership_period_in_years.into(); 
 	let block_number_years = years* YEARS;
-
-    
     let membership_expiration_time = block_number_now+ block_number_years; 
 
     membership_expiration_time
@@ -36,7 +33,7 @@ fn create_club_works() {
                 //annual_expence of the Bob's Club should be equal to 1000
                 assert_eq!(bob_club_1.annual_expences, 1000);
 
-                // the balance of FeeCollector will be update to 100000000000000 as it is fee to 
+                // the balance of FeeCollector will be update to 100000000 as it is fee to 
                 // create a club
                 assert_eq!(ClubsOnChain::check_balance_of_fee_collector(), 100000000);
 
@@ -52,10 +49,9 @@ fn create_club_works() {
                     ClubsOnChain::create_club(RawOrigin::Root.into(), BOB, annual_expences_of_club_2)
                 );
 
-                // now the balance of fee collector will be 200000000000000
+                // now the balance of fee collector will be 200000000
                 // as two clubs got created 
                 assert_eq!(ClubsOnChain::check_balance_of_fee_collector(), 200000000);
-
 
                   // get the Second club of BOB 
                   let bob_club_2 = ClubsOnChain::read_clubs(BOB, 2).unwrap();
@@ -70,7 +66,7 @@ fn create_club_works() {
                     ClubsOnChain::create_club(RawOrigin::Root.into(), CHARLIE, charlie_club_annual_expence)
                 );  
 
-                // now the balance of fee collector will be 300000000000000
+                // now the balance of fee collector will be 300000000
                 // as three clubs got created 
                 assert_eq!(ClubsOnChain::check_balance_of_fee_collector(), 300000000);
 
@@ -292,11 +288,11 @@ fn set_annual_expences_works() {
 fn renewal_of_membership_works() {
 
         /*
-            WHEN THE MEMBERSHIP IS EXPIRED WE RENEW BY DEFAULT UNTIL MEMBER HAS CANCELED THE 
+            WHEN THE MEMBERSHIP IS EXPIRED WE RENEW IT BY DEFAULT UNTIL MEMBER HAS CANCELED THE 
             MEMBERSHIP    
 
-            BY DEFAULT THE RENEWAL PERIOD WILL BE SAME AS THE 
-            alice_membership_period AND SHE WILL AGAIN HAVE TO PAY THAT AMOUNT
+            BY DEFAULT THE RENEWAL PERIOD WILL BE  CALCULATED ON  THE 'membership_period'
+            MEMBER HAS SET IT TO AND SHE WILL AGAIN HAVE TO PAY THAT AMOUNT
             TO THE OWNER 
         */
 
@@ -347,14 +343,11 @@ fn renewal_of_membership_works() {
                 ClubsOnChain::membership_expired(test_expiration_period)
             );
 
-            // _= ClubsOnChain::on_i
-
-
         // Now the ALICE's Membership is renewd with the new expiration time 
        let new_test_expiration_time = membership_expire_period_test(alice_membership_data.membership_period_in_years, test_expiration_period);
 
           
-        // Membership  of ALICE in BOB's club is successfully renewd
+        // Membership  of ALICE in BOB's club is successfully renewd with new expiration time 
         let expired_on = ClubsOnChain::read_expired_on(new_test_expiration_time).unwrap();
 
         assert_eq!(expired_on.contains(&(ALICE,club_id,BOB)), true);
@@ -399,15 +392,13 @@ fn cancel_membership_works() {
         let expired_on = ClubsOnChain::read_expired_on(alice_membership_data.expired_on).unwrap();
         assert_eq!(expired_on.contains(&(ALICE,club_id,BOB)), true);
 
-
         // Now ALICE wants to remove  her membership from this club 
 
         assert_ok!(
             ClubsOnChain::cancel_membership(RuntimeOrigin::signed(BOB), ALICE, club_id)
         );
 
-        // now lets read membership  again if its error 
-        // then we can be sure that the  membership is removed 
+        // now lets read membership  again if its error  then we can be sure that the  membership is removed 
 
         assert_eq!(ClubsOnChain::read_membership(key).is_err(), true); 
 

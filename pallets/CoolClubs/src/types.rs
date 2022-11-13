@@ -24,6 +24,6 @@ pub struct MemberShipData<BlockNumber> {
     // membership expired on 
     pub(crate) expired_on:BlockNumber,
     // membership period in years  storing it  as member may wants to change it further
-    pub membership_period_in_years:u32
+    pub(crate) membership_period_in_years:u32
 }
 
