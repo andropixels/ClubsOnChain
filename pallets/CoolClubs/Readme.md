@@ -1,7 +1,8 @@
 ## pallet clubs
   ## clone the repo
-    https git@github.com:andropixels/ClubsOnChain.git
-    ssh  https://github.com/andropixels/ClubsOnChain.git
+    https https://github.com/andropixels/ClubsOnChain.git
+    ssh   git@github.com:andropixels/ClubsOnChain.git
+        
 
 ### Test the pallet-clubs
      cargo test -p pallet-clubs 
