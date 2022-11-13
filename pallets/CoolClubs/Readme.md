@@ -7,10 +7,10 @@
      cargo test -p pallet-clubs 
 
 ### Build the pallet
-   cargo build -p pallet-clubs
+     cargo build -p pallet-clubs
 
 ### Build the node
-   cargo build --release
+     cargo build --release
 
 ### Asumptions based on given problem statement
     1-Root can create the club
