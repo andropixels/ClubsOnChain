@@ -56,8 +56,6 @@ use crate::types::*;
 		/*AS PER THE PROBLEM STATEMENT MAX MEMBER CAN PAY IS FOR THE PERIOD OF 100 YEARS  */
 		/// Maximum Member Ship Period will be 100 years 
 		type MaxMembershipPeriod: Get<Self::BlockNumber>;
-
-		
 		/*WE CAN EASILY SET THE ROOT ROOT IN Runtime   */
 		type Root:EnsureOrigin<Self::RuntimeOrigin>;
 
@@ -70,8 +68,6 @@ use crate::types::*;
 
 	}
 
-
-
 	pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
 	pub type BalanceOf<T> = <<T as Config>::Currency as Currency<AccountIdOf<T>>>::Balance;
 	pub type BlockNumberOf<T> = <T as frame_system::Config>::BlockNumber;
@@ -83,9 +79,7 @@ use crate::types::*;
 	type ClubsOF<T> = Club<BalanceOf<T>,ClubMembers<T>,BlockNumberOf<T>>; 
 	/// MemberShip Data Storing Expiration Period
     type MemberShipDataOf<T> = MemberShipData<BlockNumberOf<T>>;
-
-
-
+	
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
@@ -106,12 +100,10 @@ use crate::types::*;
 
 	}
 
-
-
+	
 	#[pallet::error]
 	pub enum Error<T> {
-
-
+		
 		/// If club does not exists with given Owner and club_id as keys
 		ClubDoesNotExistORWrongOwner,
 		/// Club Id Does not Exits
@@ -161,9 +153,6 @@ use crate::types::*;
 	#[pallet::storage]
 	pub type MemberShip<T:Config> = StorageMap<_, Blake2_128Concat, (AccountIdOf<T>,ClubId), MemberShipDataOf<T>, OptionQuery>; 
 
-
-
-	
 	///  to check if at present block the memnership of some memberfrom a specific Club is expired or not
 	#[pallet::hooks]
 	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
@@ -180,7 +169,6 @@ use crate::types::*;
 			}
 		}
 	}
-
 
 
 	#[pallet::call]
@@ -211,7 +199,6 @@ use crate::types::*;
 	)?;
 
 
-
 	// getting the blocknumber when  club_created
 	let club_creation_time = <frame_system::Pallet<T>>::block_number();
 
@@ -227,8 +214,6 @@ use crate::types::*;
 
 	}; 
 
-
-	
 	//inserting club on chain with the mapping as owner->id => Club
 	Clubs::<T>::insert(owner.clone(),club_id, my_club);
 
@@ -246,8 +231,6 @@ use crate::types::*;
 	/// Owner can set/ chnage the annual_expence of club
 	pub	fn set_the_annual_expences(origin:OriginFor<T>, new_annual_expence:BalanceOf<T>,club_id:u64) -> DispatchResult {
 
-
-		
         // owner can set annual expence
 		let owner = ensure_signed(origin)?; 
 		// check if the Club exists and mutate the annual_expence
@@ -343,7 +326,7 @@ use crate::types::*;
 				/*
 				AS NO MECHANISM FOR FEE CALCULATION SPECIFIED IN PROBLEM STATEMENT USING THIS SIMPLE FORMULA FOR THE SAME
 				AS CALCULATING THE FEES BASED ON THE ACTUAL BLOCK NUMBER 
-				CAN RESULT IN OVERFLOW AND 	
+				CAN RESULT IN A VERY LARGE NUMBER POSSIBLY OVERFLOW
 				So, using the Simple Formul for calculating the fees of membership
 				total_fees = Time * Fees_For_Unit_Time
 				THIS LOGIC CAN BE CHANGED WITH FEW MORE SPECIFICATIONS IN PROBLEM STATEMENT
@@ -416,15 +399,9 @@ use crate::types::*;
 					membership_data.membership_period_in_years = new_membership_period_in_years;
 
 					Self::deposit_event(Event::<T>::MembershipPeriodUpdated(key.0,key.1));
-
-
-
 					Ok(())
 				}
 			)
-
-
-		
 	}
 
 
@@ -454,9 +431,6 @@ use crate::types::*;
 
 				let index = member_data.binary_search(&value).unwrap(); 
 				member_data.remove(index);
-
-
-
 
 				Ok(())
 
@@ -488,11 +462,7 @@ use crate::types::*;
 		Ok(())
 
 		
-
-
-		
 	}
-
 
 	}
 
@@ -551,9 +521,6 @@ use crate::types::*;
 			Ok(())
 
 		}
-
-
-
 
 		/// Must Be Called after the check that key exists In Membership
 		fn get_membership_data(key: (AccountIdOf<T>, u64)) -> Option< MemberShipDataOf<T>> {
