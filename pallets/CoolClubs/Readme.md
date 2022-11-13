@@ -24,7 +24,3 @@
         D- The MaximumMembership Period is 100 years
     5-Club Ownerhship can be transfered for that new owner will pay to the oldOwner
     6-Club Owner can set/Change the Annual Expences of club    
-
-
-
-           

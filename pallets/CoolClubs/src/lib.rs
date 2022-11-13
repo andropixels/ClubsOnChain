@@ -88,7 +88,7 @@ use crate::types::*;
 		/// AnnualExpenceChanged(ClubId, NewAnnualExpence) when the new annual_expence is set
 		AnnualExpenceChanged( ClubId, BalanceOf<T>),
 		/// MemberAdded(member,clubId) when the new member added in the club of clubId
-		MemberAdded(AccountIdOf<T>, ClubId,BlockNumberOf<T>),
+		MemberAdded(AccountIdOf<T>, ClubId),
 		/// OwnershipOfClubTransfered(,club_id) when the owner of club is changed 
 		OwnershipOfClubTransfered( ClubId),
 		/// MemberShipExpired(Member, club_id) when the member is removed or the membership expired 
@@ -360,7 +360,7 @@ use crate::types::*;
 				maybe_club.members.push(wanna_be_member.clone()); 
 
 				// emit the event for New Member Added 
-				Self::deposit_event(Event::<T>::MemberAdded(wanna_be_member,club_id,membership_expiration_time));
+				Self::deposit_event(Event::<T>::MemberAdded(wanna_be_member,club_id));
 
 				Ok(())
 			}

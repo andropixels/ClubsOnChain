@@ -66,8 +66,6 @@ fn as_lookup<T: Config>(account: T::AccountId) -> AccountIdLookupOf<T> {
 }
 
 
-
-
 benchmarks!{
 
     create_club {
