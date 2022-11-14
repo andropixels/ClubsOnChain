@@ -193,7 +193,7 @@ use crate::types::*;
 		&owner,
 		&Self::fee_collector_id(),
 		T::FeesToCreateClub::get(),
-		ExistenceRequirement::AllowDeath
+		ExistenceRequirement::KeepAlive
 	)?;
 
 
@@ -265,7 +265,7 @@ use crate::types::*;
 			&new_owner,
 			&old_owner,
 			fees,
-			ExistenceRequirement::AllowDeath
+			ExistenceRequirement::KeepAlive
 		)?;
 
 		// take the club 
@@ -332,7 +332,7 @@ use crate::types::*;
 					&wanna_be_member,
 					&owner,
 					calculated_fees,
-					ExistenceRequirement::AllowDeath
+					ExistenceRequirement::KeepAlive
 				)?;
 
 				let now = <frame_system::Pallet<T>>::block_number();
@@ -589,7 +589,7 @@ use crate::types::*;
 					&member_id,
 					&club_owner,
 					calculated_fees,
-					ExistenceRequirement::AllowDeath
+					ExistenceRequirement::KeepAlive
 				)?;
 
 			

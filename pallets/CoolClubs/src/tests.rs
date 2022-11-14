@@ -1,4 +1,5 @@
 pub use crate::{mock::*, Error};
+use frame_support::traits::Hooks;
 pub use frame_support::{assert_noop, assert_ok};
 pub use frame_system::RawOrigin;
 
@@ -339,7 +340,8 @@ fn renewal_of_membership_works() {
         // now we set our blocknumber to the ALICE's expiration blocknumber
         System::set_block_number(test_expiration_period);
 
-        assert_ok!(
+
+            assert_ok!(
                 ClubsOnChain::membership_expired(test_expiration_period)
             );
 
