@@ -1,8 +1,6 @@
 
 
 use super::*;
-// pub use crate::{mock::*, Error};
-
 
 use crate::{Pallet as MyClub,*, AccountIdLookupOf};
 use frame_benchmarking::{account,benchmarks, impl_benchmark_test_suite};
@@ -291,7 +289,7 @@ benchmarks!{
         );
     }
     verify{
-        // reading memnber ship data checking if the membership period is updated
+        // reading member ship data checking if the membership period is updated
         let key = (member,club_id);
         let membership_data = MyClub::<T>::read_membership(key).unwrap();
         assert_eq!(membership_data.membership_period_in_years, new_membership_period)
