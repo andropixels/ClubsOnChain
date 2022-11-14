@@ -100,7 +100,7 @@ fn add_member_works() {
 
         let alice_membership_period:u32 = 1; 
 
-         // Lets add alice add bloc_number 10
+         // Lets add alice, setting up block_number as 10
          System::set_block_number(10);
          let alices_membership_expiration_period = membership_expire_period_test(alice_membership_period, 10);
         
