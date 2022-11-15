@@ -247,7 +247,7 @@ benchmarks!{
 
     verify{
 
-        // the membership period of member will be updated after expiration
+        // the membership period of member will be renewd after expiration
        let new_test_expiration_time = membership_expire_period_test_benchmark::<T>(member_ship_period, expiration_period_of_member);
 
         let expired_on =  MyClub::<T>::read_expired_on(new_test_expiration_time).unwrap();
