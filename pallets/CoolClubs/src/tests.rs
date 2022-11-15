@@ -71,7 +71,7 @@ fn create_club_works() {
                 // as three clubs got created 
                 assert_eq!(ClubsOnChain::check_balance_of_fee_collector(), 300000000);
 
-                 // get the Second club of BOB 
+                 // get the  club of CHARLIE 
                  let charlie_club_1 = ClubsOnChain::read_clubs(CHARLIE, 3).unwrap();
                  // There will be no members in the Club initially or unitl owner adds one   
                  assert_eq!(charlie_club_1.members.len(), 0);
@@ -140,7 +140,7 @@ fn add_member_works() {
 
         let charlies_membership_period:u32 = 2; 
 
-        // lets add charlie at block_number 20
+        // lets add charlie, setting block_number= 20
         System::set_block_number(20);
         let charlies_expiration_period = membership_expire_period_test(charlies_membership_period, 20);
         // BOB adding CHARLIE as a next member
