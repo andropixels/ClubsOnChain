@@ -134,7 +134,7 @@ benchmarks!{
 
         );
      } verify{
-        // verifying that new owner can add member to the club
+        // verifying that new owner can not  add member to the club
         // as the ownership transferred
         assert_noop!(
             MyClub::<T>::add_members(RawOrigin::Signed(owner).into(), new_owner_lookup, club_id, 1),
