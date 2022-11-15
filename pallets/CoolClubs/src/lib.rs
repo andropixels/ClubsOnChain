@@ -380,7 +380,7 @@ use crate::types::*;
 
 			ensure!(MemberShip::<T>::contains_key(&key), Error::<T>::MemberShipDoesNotExist);
 
-			// using try_mutate exists for additional secuirty and mutating the data
+			// using try_mutate for additional secuirty and mutating the data
 
 		MemberShip::<T>::try_mutate(
 				key.clone(),
@@ -488,7 +488,7 @@ use crate::types::*;
 
 				/*
 				  additional check if the membership exists 
-				  this will ensure the that the club evantually exists 
+				  this will ensure  that the club evantually exists 
 				  and will save the further reading from Clubs
 				*/
 				
@@ -614,7 +614,7 @@ use crate::types::*;
 	    pub fn check_balance(who:&AccountIdOf<T>) -> BalanceOf<T> {
 			T::Currency::total_balance(&who)	
 		}
-		/// will get trigered for the renewal for membership after the membership has beem expired 
+		/// will get trigered for the renewal of membership after the membership has been expired 
 		fn mutate_membership(key:(AccountIdOf<T>, ClubId), new_expiration_period:T::BlockNumber) -> DispatchResult {
 
 			MemberShip::<T>::try_mutate(
