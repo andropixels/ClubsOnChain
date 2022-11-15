@@ -40,7 +40,7 @@ fn create_club_works() {
 
                 /*
                  As per the problem statement the owner has to pay for creating a club 
-                 that means one owner can create multiple clubs 
+                 and  one owner can own  multiple clubs  with different id's 
 
                 */    
 
