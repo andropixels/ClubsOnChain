@@ -2,13 +2,16 @@
 
 use super::*;
 
-use crate::{Pallet as MyClub,*, AccountIdLookupOf};
+use crate::{Pallet as ClubsOnChain,*, AccountIdLookupOf};
+// use crate::mock::*; 
 use frame_benchmarking::{account,benchmarks, impl_benchmark_test_suite};
 use frame_support::pallet_prelude::DispatchResult;
 use frame_system::{RawOrigin};
 use frame_support::{assert_ok, assert_noop};
 use frame_support::traits::{Currency};
-
+use frame_support::{
+    traits::{OnFinalize, OnInitialize, OffchainWorker},
+};
 const BALANCE_FACTOR: u32 = 100_000_000;
 
 /*
@@ -39,7 +42,7 @@ fn membership_expire_period_test_benchmark<T: Config>(membership_period_in_years
 /// function for club creation it does not needs any checks as it is only for testing purpose
 fn benchmark_create_club<T:Config>(owner_lookup:AccountIdLookupOf<T>,initial_annual_expence:BalanceOf<T>) -> DispatchResult {
 
-    MyClub::<T>::create_club(RawOrigin::Root.into(),owner_lookup,initial_annual_expence)
+    ClubsOnChain::<T>::create_club(RawOrigin::Root.into(),owner_lookup,initial_annual_expence)
 }
 
 
@@ -73,12 +76,12 @@ benchmarks!{
         let club_id = 1;
      }:{
          assert_ok!(
-            MyClub::<T>::create_club(RawOrigin::Root.into(),owner_lookup,initial_annual_expences)
+            ClubsOnChain::<T>::create_club(RawOrigin::Root.into(),owner_lookup,initial_annual_expences)
          );
      }
      verify {
         // we can read the clubs with the exact keys 
-        let club =  MyClub::<T>::read_clubs(owner, club_id).unwrap(); 
+        let club =  ClubsOnChain::<T>::read_clubs(owner, club_id).unwrap(); 
         assert_eq!(club.annual_expences, initial_annual_expences); 
      }
 
@@ -100,14 +103,14 @@ benchmarks!{
     
     }:{
         assert_ok!(
-            MyClub::<T>::add_members(RawOrigin::Signed(owner.clone()).into(),member_lookup,club_id,member_ship_period)
+            ClubsOnChain::<T>::add_members(RawOrigin::Signed(owner.clone()).into(),member_lookup,club_id,member_ship_period)
 
         );
      }
      verify{
         // verifying if the mebership exists after adding in the club
         let key = (member.clone(),club_id);
-        let alice_membership_data = MyClub::<T>::read_membership(key).unwrap(); 
+        let alice_membership_data = ClubsOnChain::<T>::read_membership(key).unwrap(); 
         assert_eq!(alice_membership_data.membership_period_in_years, member_ship_period);
      }
     
@@ -130,14 +133,14 @@ benchmarks!{
 
      }:{
         assert_ok!(
-            MyClub::<T>::transfer_ownership(RawOrigin::Signed(owner.clone()).into(),new_owner_lookup.clone(),fees_amount,club_id )
+            ClubsOnChain::<T>::transfer_ownership(RawOrigin::Signed(owner.clone()).into(),new_owner_lookup.clone(),fees_amount,club_id )
 
         );
      } verify{
         // verifying that new owner can not  add member to the club
         // as the ownership transferred
         assert_noop!(
-            MyClub::<T>::add_members(RawOrigin::Signed(owner).into(), new_owner_lookup, club_id, 1),
+            ClubsOnChain::<T>::add_members(RawOrigin::Signed(owner).into(), new_owner_lookup, club_id, 1),
             Error::<T>::ClubDoesNotExistORWrongOwner
 
         );
@@ -157,13 +160,13 @@ benchmarks!{
         let new_annual_expence =10000_u32.into();
      }:{
         assert_ok!(
-            MyClub::<T>::set_the_annual_expences(RawOrigin::Signed(owner.clone()).into(),new_annual_expence,club_id)
+            ClubsOnChain::<T>::set_the_annual_expences(RawOrigin::Signed(owner.clone()).into(),new_annual_expence,club_id)
 
         );
      }
      verify{
         // verifying by reading club if the new_annual_expence has been set or not 
-        let club =  MyClub::<T>::read_clubs(owner, club_id).unwrap(); 
+        let club =  ClubsOnChain::<T>::read_clubs(owner, club_id).unwrap(); 
         assert_eq!(club.annual_expences, new_annual_expence); 
      }
 
@@ -186,28 +189,28 @@ benchmarks!{
          let member_lookup = as_lookup::<T>(member.clone());
          
         assert_ok!(
-            MyClub::<T>::add_members(RawOrigin::Signed(owner.clone()).into(),member_lookup.clone(),club_id,member_ship_period)
+            ClubsOnChain::<T>::add_members(RawOrigin::Signed(owner.clone()).into(),member_lookup.clone(),club_id,member_ship_period)
 
         );
         // member added 
         let key = (member.clone(),club_id);
         // reading membership to check if the membership has been added
         // and membership_period is correct
-        let charlie_membership_data = MyClub::<T>::read_membership(key).unwrap(); 
+        let charlie_membership_data = ClubsOnChain::<T>::read_membership(key).unwrap(); 
         assert_eq!(charlie_membership_data.membership_period_in_years, member_ship_period);
 
      }:{
       assert_ok!(
-            MyClub::<T>::cancel_membership(RawOrigin::Signed(owner.clone()).into(),member_lookup,club_id)
+            ClubsOnChain::<T>::cancel_membership(RawOrigin::Signed(owner.clone()).into(),member_lookup,club_id)
          );
      }
       verify{
         // after membership has been cancelled there will be no key for that member
         let key = (member,club_id);
-        assert_eq!( MyClub::<T>::read_membership(key).is_err(), true); 
+        assert_eq!( ClubsOnChain::<T>::read_membership(key).is_err(), true); 
      }
 
-    on_initialize {
+     on_initialize {
 
         // Club Owner
         let owner = endowed_account::<T>("owner",0);
@@ -230,7 +233,7 @@ benchmarks!{
 
          // add the member 
         assert_ok!(
-            MyClub::<T>::add_members(RawOrigin::Signed(owner.clone()).into(),member_lookup.clone(),club_id,member_ship_period)
+            ClubsOnChain::<T>::add_members(RawOrigin::Signed(owner.clone()).into(),member_lookup.clone(),club_id,member_ship_period)
 
         );
 
@@ -238,10 +241,10 @@ benchmarks!{
         frame_system::Pallet::<T>::set_block_number(expiration_period_of_member);
         
         // now the membership  will be expired 
-    }:{
-         assert_ok!(
-            MyClub::<T>::membership_expired(expiration_period_of_member)
-        );
+    }: {
+        
+        ClubsOnChain::<T>::on_initialize(expiration_period_of_member);
+        
       
     }
 
@@ -250,7 +253,7 @@ benchmarks!{
         // the membership period of member will be renewd after expiration
        let new_test_expiration_time = membership_expire_period_test_benchmark::<T>(member_ship_period, expiration_period_of_member);
 
-        let expired_on =  MyClub::<T>::read_expired_on(new_test_expiration_time).unwrap();
+        let expired_on =  ClubsOnChain::<T>::read_expired_on(new_test_expiration_time).unwrap();
 
         assert_eq!(expired_on.contains(&(member,club_id,owner)), true);
 
@@ -272,11 +275,11 @@ benchmarks!{
     let member_lookup = as_lookup::<T>(member.clone());
     // add member
     assert_ok!(
-        MyClub::<T>::add_members(RawOrigin::Signed(owner.clone()).into(),member_lookup.clone(),club_id,member_ship_period)
+        ClubsOnChain::<T>::add_members(RawOrigin::Signed(owner.clone()).into(),member_lookup.clone(),club_id,member_ship_period)
 
     );
         let key = (member.clone(),club_id);
-        let membership_data = MyClub::<T>::read_membership(key).unwrap();
+        let membership_data = ClubsOnChain::<T>::read_membership(key).unwrap();
         assert_eq!(membership_data.membership_period_in_years, member_ship_period);
     // now member will update the membership period
 
@@ -285,22 +288,20 @@ benchmarks!{
     }:{
 
         assert_ok!(
-            MyClub::<T>::update_membership_period(RawOrigin::Signed(member.clone()).into(),club_id,new_membership_period)
+            ClubsOnChain::<T>::update_membership_period(RawOrigin::Signed(member.clone()).into(),club_id,new_membership_period)
         );
     }
     verify{
         // reading member ship data checking if the membership period is updated
         let key = (member,club_id);
-        let membership_data = MyClub::<T>::read_membership(key).unwrap();
+        let membership_data = ClubsOnChain::<T>::read_membership(key).unwrap();
         assert_eq!(membership_data.membership_period_in_years, new_membership_period)
 
      }
 }
 
-
-
 impl_benchmark_test_suite!(
-    MyClub,
+    ClubsOnChain,
     crate::mock::Extuilder::default().build(),
     crate::mock::Test,
 );

@@ -5,7 +5,7 @@ pub  use pallet::*;
 use sp_runtime::traits::StaticLookup;
 
 #[cfg(test)]
-mod mock;
+pub mod mock;
 
 #[cfg(test)]
 pub mod tests;
@@ -128,7 +128,7 @@ use crate::types::*;
 	#[pallet::pallet]
 	#[pallet::without_storage_info]
 	#[pallet::generate_store(pub(super) trait Store)]
-	pub struct Pallet<T>(_); 
+	pub struct Pallet<T>(PhantomData<T>); 
 
 	/*THERE CAN BE MULTIPLE CLUBS WE NEED TO GIVE ID TO EVERY CLUB */
 	///Tracking Club ID's
@@ -193,7 +193,7 @@ use crate::types::*;
 		&owner,
 		&Self::fee_collector_id(),
 		T::FeesToCreateClub::get(),
-		ExistenceRequirement::KeepAlive
+		ExistenceRequirement::AllowDeath
 	)?;
 
 
@@ -265,7 +265,7 @@ use crate::types::*;
 			&new_owner,
 			&old_owner,
 			fees,
-			ExistenceRequirement::KeepAlive
+			ExistenceRequirement::AllowDeath
 		)?;
 
 		// take the club 
@@ -332,7 +332,7 @@ use crate::types::*;
 					&wanna_be_member,
 					&owner,
 					calculated_fees,
-					ExistenceRequirement::KeepAlive
+					ExistenceRequirement::AllowDeath
 				)?;
 
 				let now = <frame_system::Pallet<T>>::block_number();
@@ -589,7 +589,7 @@ use crate::types::*;
 					&member_id,
 					&club_owner,
 					calculated_fees,
-					ExistenceRequirement::KeepAlive
+					ExistenceRequirement::AllowDeath
 				)?;
 
 			
