@@ -23,7 +23,6 @@ const BALANCE_FACTOR: u32 = 100_000_000;
 
     YEARS = SECS_PER_YEAR / SECS_PER_BLOCK
 
-
 */
 pub const YEARS:u32 = 31_557_600_u32/6;
 type BlockNumberOf<T> = <T as frame_system::Config>::BlockNumber;
