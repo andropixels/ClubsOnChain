@@ -41,7 +41,6 @@ use crate::types::*;
 		
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
 		type Currency:ReservableCurrency<Self::AccountId>;
-	
 		/// Fees For Creating a Club
 		type FeesToCreateClub:Get<BalanceOf<Self>>;
 
