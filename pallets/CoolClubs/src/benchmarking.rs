@@ -12,7 +12,6 @@ use frame_support::{
     traits::{OnFinalize, OnInitialize, OffchainWorker},
 };
 const BALANCE_FACTOR: u32 = 100_000_000;
-
 /*
     As per the runtime 
     MILLISECS_PER_BLOCK = 6000
