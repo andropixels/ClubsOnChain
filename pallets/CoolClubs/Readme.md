@@ -7,6 +7,7 @@
 ### Test the pallet-clubs
      cargo test -p pallet-clubs 
 
+
 ### Build the pallet
      cargo build -p pallet-clubs
 
